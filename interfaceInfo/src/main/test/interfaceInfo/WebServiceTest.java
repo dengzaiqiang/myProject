@@ -49,6 +49,9 @@ public class WebServiceTest {
 		String resultXml = WebServiceUtils.
 				invokeMethod(methodName, linkedMap);
 		System.out.println(resultXml);
+		if("".equals(resultXml.trim())){
+			throw new RuntimeException("返回结果为空字符串");
+		}
 		if(null==resultName||"".equals(resultName)){
 			return resultXml;
 		}
@@ -84,7 +87,7 @@ public class WebServiceTest {
 		list2.add(passengerInfoCard);
 		PassengerCardInfos passengerInfoCards = new PassengerCardInfos(list2);
 		
-		FlightTrip flightTrip = new FlightTrip("CAN","PEK","2014-04-23","CZ3101","W");
+		FlightTrip flightTrip = new FlightTrip("CKG","KWE","2014-04-23","CZ3475","M");
 		List<FlightTrip> list3 = new ArrayList<FlightTrip>();
 		list3.add(flightTrip);
 		FlightTrips flightTrips = new FlightTrips(list3);
@@ -95,13 +98,13 @@ public class WebServiceTest {
 		param.setFlightTrips(flightTrips);
 		param.setLinkMan("邓在强");
 		param.setLinkTel("18520160743");
-		param.setPolicyId("cz");
+		param.setPolicyId("CZ13093016592339032");
 		
 		com.qh.reserve.Params params = new com.qh.reserve.Params(param);
 		System.out.println(WebServiceUtils.beanToXml(params, com.qh.reserve.Params.class));
 		linkedMap.put("paramsXml", WebServiceUtils.beanToXml(params, com.qh.reserve.Params.class));
-		String resultContent = getReturnString("Reserve", linkedMap, RESULT);
-		System.out.println( resultContent);
+		//String resultContent = getReturnString("Reserve", linkedMap, RESULT);
+		//System.out.println( resultContent);
 		
 	} 
 	
@@ -113,7 +116,8 @@ public class WebServiceTest {
 		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
 		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
 		
-		PolicyParam param = new PolicyParam("2014-04-26", "CANPEK", "CZ","W", "CZ3101");
+		//PolicyParam param = new PolicyParam("2014-04-23", "CANPEK", "CZ","Y", "CZ3107");
+		PolicyParam param = new PolicyParam("2014-05-23", "CANPEK", "","", "");
 		PolicyParams params = new PolicyParams(param);
 		
 		linkedMap.put("paramsXml", WebServiceUtils.beanToXml(params, PolicyParams.class));
