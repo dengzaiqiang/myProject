@@ -96,10 +96,10 @@ public class WebServiceUtils {
 			Document doc = DocumentHelper.parseText(resultXml);
 			map = new HashMap<String,Object>();
 			Element root = doc.getRootElement();
-			List<Node> list = root.selectNodes("AirPortInfo/CNHotCity");
+			/*List<Node> list = root.selectNodes("AirPortInfo/CNHotCity");
 			for(Node node:list){
 				System.out.println("nodeName:"+node.getStringValue());
-			}
+			}*/
 			//System.out.println(hotCity.getTextTrim());
 			List<Element> eleLists = root.elements();
 			for(Element ele:eleLists){
@@ -123,6 +123,10 @@ public class WebServiceUtils {
 		try {
 			Document doc = DocumentHelper.parseText(resultXml);
 			Element root = doc.getRootElement();
+			/*List<Element> list = root.elements();
+			for(Element ele:list){
+				System.out.println(ele.getName());
+			}*/
 			List<Node> list = root.selectNodes(xpath);
 			for(Node node:list){
 				//System.out.println(node.getName()+":"+node.getStringValue());
@@ -133,6 +137,32 @@ public class WebServiceUtils {
 			e.printStackTrace();
 		}
 		return content;
+	}
+	/**
+	 * 获取节点集合
+	 * @param resultXml
+	 * @param xpath
+	 * @return
+	 */
+	public static List<Element> getNodesForXPath(String resultXml,String xpath){
+		List<Element> list = null;
+		try {
+			Document doc = DocumentHelper.parseText(resultXml);
+			Element root = doc.getRootElement();
+			/*List<Element> list = root.elements();
+			for(Element ele:list){
+				System.out.println(ele.getName());
+			}*/
+			list = root.selectNodes(xpath);
+			/*for(Node node:list){
+				//System.out.println(node.getName()+":"+node.getStringValue());
+			}
+			content = list.get(0).getStringValue();*/
+		} catch (DocumentException e) {
+			System.out.println("解析resultXml出错");
+			e.printStackTrace();
+		}
+		return list;
 	}
 	/**
 	* @Title: beanToXml
