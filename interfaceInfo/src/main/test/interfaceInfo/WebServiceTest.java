@@ -1,5 +1,6 @@
 package interfaceInfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -7,12 +8,20 @@ import java.util.Map;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
-import org.dom4j.Node;
 import org.junit.Test;
 
 import com.qh.ffInfo.Param;
 import com.qh.ffInfo.Params;
 import com.qh.login.LoginInfo;
+import com.qh.policy.PolicyParam;
+import com.qh.policy.PolicyParams;
+import com.qh.reserve.CPassengerCardInfo;
+import com.qh.reserve.CPassengerInfo;
+import com.qh.reserve.FlightTrip;
+import com.qh.reserve.FlightTrips;
+import com.qh.reserve.PassengerCardInfos;
+import com.qh.reserve.PassengerInfos;
+import com.qh.util.RandomGUIDUtil;
 import com.qh.util.WebServiceUtils;
 
 /**
@@ -39,7 +48,7 @@ public class WebServiceTest {
 	private String getReturnString(String methodName,Map<String,Object> linkedMap,String resultName){
 		String resultXml = WebServiceUtils.
 				invokeMethod(methodName, linkedMap);
-		//System.out.println(resultXml);
+		System.out.println(resultXml);
 		if(null==resultName||"".equals(resultName)){
 			return resultXml;
 		}
@@ -50,11 +59,68 @@ public class WebServiceTest {
 		String resultContent = (String)resultMap.get(resultName);
 		return resultContent;
 	}
+	/**
+	 * 机票预定
+	 */
+	@Test
+	public void reserve(){
+		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
+		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
+		//旅客信息
+		CPassengerInfo passengerInfo = new CPassengerInfo();
+		String pid = RandomGUIDUtil.getRandomGUID();
+		passengerInfo.setPid(pid);
+		passengerInfo.setPassengerName("张三");
+		passengerInfo.setPassengerType("1");
+		passengerInfo.setCertifyType("身份证");
+		passengerInfo.setCertifCode("429006198911287016");
+		
+		List<CPassengerInfo> list1 = new ArrayList<CPassengerInfo>();
+		list1.add(passengerInfo);
+		PassengerInfos passengerInfos = new PassengerInfos(list1);
+		
+		CPassengerCardInfo passengerInfoCard = new CPassengerCardInfo(pid, "180005348224", "CZ");
+		List<CPassengerCardInfo> list2 = new ArrayList<CPassengerCardInfo>();
+		list2.add(passengerInfoCard);
+		PassengerCardInfos passengerInfoCards = new PassengerCardInfos(list2);
+		
+		FlightTrip flightTrip = new FlightTrip("CAN","PEK","2014-04-23","CZ3101","W");
+		List<FlightTrip> list3 = new ArrayList<FlightTrip>();
+		list3.add(flightTrip);
+		FlightTrips flightTrips = new FlightTrips(list3);
+		
+		com.qh.reserve.Param param = new com.qh.reserve.Param();
+		param.setPassengerCardInfos(passengerInfoCards);
+		param.setPassengerInfos(passengerInfos);
+		param.setFlightTrips(flightTrips);
+		param.setLinkMan("邓在强");
+		param.setLinkTel("18520160743");
+		param.setPolicyId("cz");
+		
+		com.qh.reserve.Params params = new com.qh.reserve.Params(param);
+		System.out.println(WebServiceUtils.beanToXml(params, com.qh.reserve.Params.class));
+		linkedMap.put("paramsXml", WebServiceUtils.beanToXml(params, com.qh.reserve.Params.class));
+		String resultContent = getReturnString("Reserve", linkedMap, RESULT);
+		System.out.println( resultContent);
+		
+	} 
 	
-	/*@Test
-	public void */
-	
-	
+	/**
+	 * 单程政策查询
+	 */
+	@Test
+	public void getSinglePolicyList(){
+		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
+		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
+		
+		PolicyParam param = new PolicyParam("2014-04-26", "CANPEK", "CZ","W", "CZ3101");
+		PolicyParams params = new PolicyParams(param);
+		
+		linkedMap.put("paramsXml", WebServiceUtils.beanToXml(params, PolicyParams.class));
+		
+		String resultContent = getReturnString("GetSinglePolicyListV2", linkedMap, RESULT);
+		System.out.println( resultContent);
+	}
 	
 	/**
 	 * 查询直达航班V2（请求超时）
@@ -73,14 +139,14 @@ public class WebServiceTest {
 	}
 	
 	/**
-	 * 查询直达航班（匹配了单程政策）
+	 * 查询直达航班（匹配了单程政策）(政策号竟然都没有)
 	 */
 	@Test
 	public void getFlightInfo(){
 		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
 		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
 		com.qh.flightInfo.Param param = 
-				new com.qh.flightInfo.Param("CAN", "LJG", "2014-05-16", "CZ");
+				new com.qh.flightInfo.Param("CAN", "PEK", "2014-04-23", "CZ");
 		com.qh.flightInfo.Params params = new com.qh.flightInfo.Params(param);
 		linkedMap.put("paramsXml", WebServiceUtils.beanToXml(params, com.qh.flightInfo.Params.class));
 		
