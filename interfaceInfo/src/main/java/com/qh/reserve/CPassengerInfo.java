@@ -1,12 +1,14 @@
 package com.qh.reserve;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * 旅客信息
  * @author Administrator
  *
  */
+@XmlType(propOrder={"pid","passengerName","passengerType","birthDate","certifyType","certifCode"})
 public class CPassengerInfo {
 	
 	private String pid;//uuid生成唯一标识

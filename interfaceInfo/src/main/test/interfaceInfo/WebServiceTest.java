@@ -10,9 +10,15 @@ import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.junit.Test;
 
+import com.qh.apply.ApplyParam;
+import com.qh.apply.ApplyParams;
 import com.qh.ffInfo.Param;
 import com.qh.ffInfo.Params;
 import com.qh.login.LoginInfo;
+import com.qh.pat.PatParam;
+import com.qh.pat.PatParams;
+import com.qh.pay.PayParam;
+import com.qh.pay.PayParams;
 import com.qh.policy.PolicyParam;
 import com.qh.policy.PolicyParams;
 import com.qh.reserve.CPassengerCardInfo;
@@ -21,6 +27,8 @@ import com.qh.reserve.FlightTrip;
 import com.qh.reserve.FlightTrips;
 import com.qh.reserve.PassengerCardInfos;
 import com.qh.reserve.PassengerInfos;
+import com.qh.search.SearchParam;
+import com.qh.search.SearchParams;
 import com.qh.util.RandomGUIDUtil;
 import com.qh.util.WebServiceUtils;
 
@@ -48,7 +56,7 @@ public class WebServiceTest {
 	private String getReturnString(String methodName,Map<String,Object> linkedMap,String resultName){
 		String resultXml = WebServiceUtils.
 				invokeMethod(methodName, linkedMap);
-		System.out.println(resultXml);
+		//System.out.println(resultXml);
 		if("".equals(resultXml.trim())){
 			throw new RuntimeException("返回结果为空字符串");
 		}
@@ -62,6 +70,112 @@ public class WebServiceTest {
 		String resultContent = (String)resultMap.get(resultName);
 		return resultContent;
 	}
+	private void printResult(String resultContent){
+		System.out.println(resultContent);
+	}
+	/**
+	* @Title: payOrder
+	* @Description: 支付订单
+	* @return void
+	 */
+	@Test
+	public void payOrder(){
+		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
+		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
+		
+		PayParam param = new PayParam("809612", "JEEXJ6", "792.40");
+		PayParams params = new PayParams(param);
+		linkedMap.put("paramsXml",WebServiceUtils.beanToXml(params, PayParams.class));
+		
+		printResult(getReturnString("PayOrderNew",linkedMap,RESULT));
+	}
+	
+	
+	
+	/**
+	* @Title: getApplyProvision
+	* @Description: 获取舱位退改签规定
+	* @return void
+	 */
+	@Test
+	public void getApplyProvision(){
+		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
+		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
+		
+		ApplyParam param = new ApplyParam("CZ", "", "Y");
+		ApplyParams params = new ApplyParams(param);
+		linkedMap.put("paramsXml", WebServiceUtils.beanToXml(params, ApplyParams.class));
+		
+		printResult(getReturnString("GetApplyProvision",linkedMap,RESULT));
+	}
+	
+	
+	/**
+	* @Title: applyBlankOutTicket
+	* @Description: 退票
+	* @return void
+	 */
+	@Test
+	public void applyBlankOutTicket(){
+		
+	}
+	
+	/**
+	* @Title: searchOrderDetail
+	* @Description: 查询订单详情
+	* @return void
+	 */
+	@Test
+	public void searchOrderDetail(){
+		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
+		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
+		linkedMap.put("OrderID", "809612");
+		
+		String resultContent = getReturnString("SearchOrderDetail", linkedMap, RESULT);
+		System.out.println( resultContent);
+		
+	}
+	
+	
+	/**
+	* @Title: searchOrder
+	* @Description: 查询订单
+	* @return void
+	 */
+	@Test
+	public void searchOrder(){
+		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
+		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
+		
+		SearchParam param = new SearchParam("JM1WFX", "", "", "", "", "", "1", "5");
+		SearchParams params = new SearchParams(param);
+		linkedMap.put("ParamsXml", WebServiceUtils.beanToXml(params, SearchParams.class));
+		
+		String resultContent = getReturnString("SearchOrder", linkedMap, RESULT);
+		System.out.println( resultContent);
+	}
+	
+	/**
+	* @Title: patPolicyByPnr
+	* @Description: 导入PNR匹配 政策以及航班舱位运价
+	* @return void
+	 */
+	@Test
+	public void patPolicyByPnr(){
+		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
+		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
+		
+		PatParam param = new PatParam("JM1WFX", "");
+		PatParams params = new PatParams(param);
+		System.out.println(WebServiceUtils.beanToXml(params, PatParams.class));
+		linkedMap.put("paramsXml", WebServiceUtils.beanToXml(params, PatParams.class));
+		
+		String resultContent = getReturnString("PatPolicyByPnr", linkedMap, RESULT);
+		System.out.println( resultContent);
+		
+	}
+	
+	
 	/**
 	 * 机票预定
 	 */
@@ -73,7 +187,7 @@ public class WebServiceTest {
 		CPassengerInfo passengerInfo = new CPassengerInfo();
 		String pid = RandomGUIDUtil.getRandomGUID();
 		passengerInfo.setPid(pid);
-		passengerInfo.setPassengerName("张三");
+		passengerInfo.setPassengerName("李四");
 		passengerInfo.setPassengerType("1");
 		passengerInfo.setCertifyType("身份证");
 		passengerInfo.setCertifCode("429006198911287016");
@@ -87,7 +201,7 @@ public class WebServiceTest {
 		list2.add(passengerInfoCard);
 		PassengerCardInfos passengerInfoCards = new PassengerCardInfos(list2);
 		
-		FlightTrip flightTrip = new FlightTrip("CKG","KWE","2014-04-23","CZ3475","M");
+		FlightTrip flightTrip = new FlightTrip("CKG","KWE","2014-05-23","CZ3475","M");
 		List<FlightTrip> list3 = new ArrayList<FlightTrip>();
 		list3.add(flightTrip);
 		FlightTrips flightTrips = new FlightTrips(list3);
@@ -98,13 +212,13 @@ public class WebServiceTest {
 		param.setFlightTrips(flightTrips);
 		param.setLinkMan("邓在强");
 		param.setLinkTel("18520160743");
-		param.setPolicyId("CZ13093016592339032");
-		
+		param.setPolicyId(" ");
+		param.setReamrk("测试 ");
 		com.qh.reserve.Params params = new com.qh.reserve.Params(param);
-		System.out.println(WebServiceUtils.beanToXml(params, com.qh.reserve.Params.class));
+		//System.out.println(WebServiceUtils.beanToXml(params, com.qh.reserve.Params.class));
 		linkedMap.put("paramsXml", WebServiceUtils.beanToXml(params, com.qh.reserve.Params.class));
-		//String resultContent = getReturnString("Reserve", linkedMap, RESULT);
-		//System.out.println( resultContent);
+		String resultContent = getReturnString("Reserve", linkedMap, RESULT);
+		System.out.println( resultContent);
 		
 	} 
 	

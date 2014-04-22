@@ -1,11 +1,13 @@
 package com.qh.reserve;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 /**
  * 预定机票参数
  * @author Administrator
  *
  */
+@XmlType(propOrder={"linkMan","linkTel","policyId","reamrk","passengerInfos","flightTrips","passengerCardInfos"})
 public class Param {
 
 	private String linkMan;//联系人

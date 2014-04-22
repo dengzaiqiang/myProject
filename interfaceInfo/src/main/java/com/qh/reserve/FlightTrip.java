@@ -1,12 +1,14 @@
 package com.qh.reserve;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * 航班信息
  * @author Administrator
  *
  */
+@XmlType(propOrder={"fromCity","toCity","flightDate","flightNo","cabin"})
 public class FlightTrip {
 
 	private String fromCity;//出发城市
