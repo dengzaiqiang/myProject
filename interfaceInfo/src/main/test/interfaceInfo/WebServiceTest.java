@@ -264,7 +264,7 @@ public class WebServiceTest {
 		Map<String,Object> linkedMap = new LinkedHashMap<String,Object>();
 		linkedMap.put("loginXml", WebServiceUtils.beanToXml(new LoginInfo(), LoginInfo.class));
 		com.qh.flightInfo.Param param = 
-				new com.qh.flightInfo.Param("CAN", "PEK", "2014-04-23", "CZ");
+				new com.qh.flightInfo.Param("CAN", "SHA", "2014-04-23", "CZ");
 		com.qh.flightInfo.Params params = new com.qh.flightInfo.Params(param);
 		linkedMap.put("paramsXml", WebServiceUtils.beanToXml(params, com.qh.flightInfo.Params.class));
 		
