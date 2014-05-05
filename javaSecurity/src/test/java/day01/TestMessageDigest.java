@@ -30,5 +30,5 @@ public class TestMessageDigest {
 		   //请看http://blog.csdn.net/guo_rui22/article/details/2826308
 		  }
 		  return strBuffer.toString();
-		 }
+	}
 }
